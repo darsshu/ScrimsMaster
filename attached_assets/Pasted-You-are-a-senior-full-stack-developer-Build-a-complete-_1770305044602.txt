@@ -1,0 +1,191 @@
+You are a senior full-stack developer.
+
+Build a complete production-ready web application named **ScrimsMaster**
+(similar to BattleXO) ONLY for **BGMI Scrims & Tournaments**.
+
+Tech Stack (MANDATORY):
+- Frontend: React.js (Vite)
+- Styling: Tailwind CSS (dark theme)
+- Backend: Node.js + Express.js
+- Database: MongoDB with Mongoose
+- Auth: JWT (access + refresh token)
+- Payments: Razorpay (test mode)
+- State management: Redux Toolkit
+- API style: REST
+- Deployment ready for Replit
+
+----------------------------------
+CORE FEATURES
+----------------------------------
+
+1. AUTHENTICATION
+- User Signup & Login
+- Fields: username, email, phone, password
+- Password hashing using bcrypt
+- JWT based auth
+- Role based access:
+  - USER
+  - ADMIN
+
+----------------------------------
+2. USER DASHBOARD
+----------------------------------
+- Profile info
+- Wallet balance (Coins)
+- Transaction history
+- Joined scrims list
+- Won scrims list
+- Withdraw request status
+
+----------------------------------
+3. COIN SYSTEM (VERY IMPORTANT)
+----------------------------------
+- 1 Rupee = 1 Coin
+- Coins stored in MongoDB
+- Actions:
+  - Add coins via Razorpay
+  - Auto deduct coins on scrims join
+  - Auto credit coins to winners
+  - Withdraw coins to UPI
+
+----------------------------------
+4. SCRIMS / TOURNAMENT SYSTEM (BGMI ONLY)
+----------------------------------
+Scrims Fields:
+- Match title
+- BGMI Match Type (Solo / Duo / Squad)
+- Map (Erangel / Miramar / Sanhok / Livik)
+- Entry Fee (Coins)
+- Prize Pool
+- Match Date & Time
+- Total Slots
+- Joined Teams
+- Room ID & Password (visible after joining)
+
+Rules:
+- User must have enough coins to join
+- Slot decreases automatically
+- Once full, joining disabled
+- After match result:
+  - Admin selects winner(s)
+  - Prize coins auto credited
+
+----------------------------------
+5. ADMIN PANEL
+----------------------------------
+Admin can:
+- Create / Update / Delete scrims
+- View all users
+- Edit user coin balance
+- Approve / Reject withdrawals
+- Declare winners
+- Add room ID & password
+- View payment history
+
+----------------------------------
+6. PAYMENT & WITHDRAWAL
+----------------------------------
+PAYMENTS:
+- Razorpay test integration
+- Coins credited after successful payment
+- Save transaction record
+
+WITHDRAW:
+- Minimum withdraw limit (e.g. 50 coins)
+- User submits:
+  - UPI ID
+  - Amount
+- Admin approval required
+- Status: Pending / Approved / Rejected
+
+----------------------------------
+7. FRONTEND PAGES
+----------------------------------
+Public Pages:
+- Home
+- Scrims List
+- Login
+- Register
+
+Protected Pages:
+- Dashboard
+- Wallet
+- My Scrims
+- Withdraw
+- Admin Panel
+
+----------------------------------
+8. UI REQUIREMENTS
+----------------------------------
+- Dark theme (gaming style)
+- Mobile responsive
+- BGMI themed colors
+- Modern card based layout
+- Toast notifications
+
+----------------------------------
+9. BACKEND STRUCTURE
+----------------------------------
+- MVC architecture
+- Separate folders:
+  - routes
+  - controllers
+  - models
+  - middleware
+- Error handling middleware
+- Environment variables (.env)
+
+----------------------------------
+10. DATABASE MODELS
+----------------------------------
+User:
+- username
+- email
+- phone
+- password
+- role
+- coins
+
+Scrim:
+- title
+- type
+- map
+- entryFee
+- prize
+- slots
+- joinedUsers
+- roomId
+- roomPassword
+- status
+
+Transaction:
+- userId
+- amount
+- type (add / deduct / win / withdraw)
+- status
+- date
+
+Withdrawal:
+- userId
+- amount
+- upiId
+- status
+
+----------------------------------
+11. EXTRA
+----------------------------------
+- Seed admin account
+- Dummy data for testing
+- README.md with setup steps
+- Fully runnable on Replit
+- No TypeScript (JS only)
+
+----------------------------------
+FINAL OUTPUT EXPECTATION
+----------------------------------
+- Complete frontend code
+- Complete backend code
+- MongoDB connection
+- Razorpay test integration
+- Ready-to-run project
+- Clean & readable code

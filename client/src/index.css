@@ -1,0 +1,77 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Gaming Theme: Dark, Orange, White */
+  --font-body: 'Inter', sans-serif;
+  --font-display: 'Orbitron', sans-serif;
+
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+
+  --card: 240 10% 5.9%;
+  --card-foreground: 0 0% 98%;
+ 
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+ 
+  --primary: 25 95% 53%; /* Vivid Orange */
+  --primary-foreground: 0 0% 100%;
+ 
+  --secondary: 240 5% 15%;
+  --secondary-foreground: 0 0% 98%;
+ 
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+ 
+  --accent: 25 95% 53%;
+  --accent-foreground: 0 0% 100%;
+ 
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+ 
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --ring: 25 95% 53%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    @apply tracking-wide uppercase;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-zinc-800 rounded-full hover:bg-zinc-700 transition-colors;
+}
+
+/* Gaming Gradients & Effects */
+.gaming-gradient {
+  background: linear-gradient(135deg, #FF5722 0%, #FF9800 100%);
+}
+
+.gaming-card {
+  @apply relative overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:shadow-[0_0_20px_-5px_rgba(255,87,34,0.3)];
+}
+
+.text-glow {
+  text-shadow: 0 0 10px rgba(255, 87, 34, 0.5);
+}
