@@ -1,8 +1,8 @@
 import { z } from 'zod';
-import { 
-  insertUserSchema, 
-  loginSchema, 
-  insertScrimSchema, 
+import {
+  insertUserSchema,
+  loginSchema,
+  insertScrimSchema,
   insertWithdrawalSchema,
   UserSchema,
   ScrimSchema,
@@ -93,8 +93,8 @@ export const api = {
     update: {
       method: 'PUT' as const,
       path: '/api/scrims/:id',
-      input: insertScrimSchema.partial().extend({ 
-        roomId: z.string().optional(), 
+      input: insertScrimSchema.partial().extend({
+        roomId: z.string().optional(),
         roomPassword: z.string().optional(),
         status: z.enum(["OPEN", "FULL", "COMPLETED", "CANCELLED"]).optional()
       }),

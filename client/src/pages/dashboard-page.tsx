@@ -1,18 +1,19 @@
 import { Layout } from "@/components/layout";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery } from "@tanstack/react-query";
-import { api, type Scrim } from "@shared/routes";
+import { api } from "@shared/routes";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Loader2, Copy } from "lucide-react";
 import { format } from "date-fns";
 import { useToast } from "@/hooks/use-toast";
+import { Scrim } from "@shared/schema";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const { toast } = useToast();
-  
+
   // Custom hook to fetch user's joined scrims (Assuming API support or filtering on client)
   // For MVP, we will fetch all scrims and filter (Not efficient for prod, but works here)
   const { data: scrims, isLoading } = useQuery({
@@ -29,7 +30,7 @@ export default function DashboardPage() {
   // For this mock without relation tables in frontend: We simulate user seeing all for now 
   // OR we rely on a proper endpoint. Let's assume we filter by ID in a real scenario
   // but here I'll just show the list of scrims for demonstration.
-  const myScrims = scrims || []; 
+  const myScrims = scrims || [];
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
@@ -63,7 +64,7 @@ export default function DashboardPage() {
                         </div>
                         <Badge>{scrim.status}</Badge>
                       </div>
-                      
+
                       {scrim.roomId ? (
                         <div className="flex gap-2 p-3 bg-zinc-900 rounded-lg text-sm font-mono">
                           <div className="flex-1">
