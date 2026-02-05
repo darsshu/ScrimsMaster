@@ -7,7 +7,10 @@ export function useScrims() {
   return useQuery({
     queryKey: [api.scrims.list.path],
     queryFn: async () => {
-      const res = await fetch(api.scrims.list.path);
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(api.scrims.list.path, { headers });
       if (!res.ok) throw new Error("Failed to fetch scrims");
       return api.scrims.list.responses[200].parse(await res.json());
     },
@@ -19,7 +22,10 @@ export function useScrim(id: string) {
     queryKey: [api.scrims.get.path, id],
     queryFn: async () => {
       const url = buildUrl(api.scrims.get.path, { id });
-      const res = await fetch(url);
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(url, { headers });
       if (!res.ok) throw new Error("Failed to fetch scrim");
       return api.scrims.get.responses[200].parse(await res.json());
     },
@@ -33,12 +39,18 @@ export function useCreateScrim() {
 
   return useMutation({
     mutationFn: async (data: InsertScrim) => {
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
       const res = await fetch(api.scrims.create.path, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create scrim");
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || "Failed to create scrim");
+      }
       return api.scrims.create.responses[201].parse(await res.json());
     },
     onSuccess: () => {
@@ -58,7 +70,10 @@ export function useJoinScrim() {
   return useMutation({
     mutationFn: async (id: string) => {
       const url = buildUrl(api.scrims.join.path, { id });
-      const res = await fetch(url, { method: "POST" });
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(url, { method: "POST", headers });
       if (!res.ok) {
         const error = await res.json();
         throw new Error(error.message || "Failed to join scrim");

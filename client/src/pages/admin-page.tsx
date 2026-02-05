@@ -191,7 +191,10 @@ function ScrimsList() {
   const { data: scrims, isLoading } = useQuery({
     queryKey: [api.scrims.list.path],
     queryFn: async () => {
-      const res = await fetch(api.scrims.list.path);
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(api.scrims.list.path, { headers });
       return await res.json() as Scrim[];
     }
   });
@@ -202,9 +205,12 @@ function ScrimsList() {
 
   const updateScrim = useMutation({
     mutationFn: async ({ id, ...data }: any) => {
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
       const res = await fetch(`/api/scrims/${id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(data)
       });
       if (!res.ok) throw new Error("Failed");
@@ -264,7 +270,10 @@ function WithdrawalsList() {
   const { data: withdrawals, isLoading } = useQuery({
     queryKey: [api.admin.withdrawals.path],
     queryFn: async () => {
-      const res = await fetch(api.admin.withdrawals.path);
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(api.admin.withdrawals.path, { headers });
       return await res.json() as (Withdrawal & { user: { username: string, email: string } })[];
     }
   });
@@ -274,9 +283,12 @@ function WithdrawalsList() {
 
   const processMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string, status: "APPROVED" | "REJECTED" }) => {
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
       const res = await fetch(api.admin.processWithdrawal.path.replace(":id", id), {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ status })
       });
       if (!res.ok) throw new Error("Failed");

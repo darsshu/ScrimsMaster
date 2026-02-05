@@ -9,8 +9,15 @@ export function useAuth() {
   const userQuery = useQuery({
     queryKey: ["/api/auth/me"],
     queryFn: async () => {
-      const res = await fetch(api.auth.me.path);
-      if (res.status === 401) return null;
+      const token = localStorage.getItem("token");
+      if (!token) return null;
+      const res = await fetch(api.auth.me.path, {
+        headers: { "Authorization": `Bearer ${token}` }
+      });
+      if (res.status === 401) {
+        localStorage.removeItem("token");
+        return null;
+      }
       if (!res.ok) throw new Error("Failed to fetch user");
       return await res.json();
     },
@@ -30,8 +37,7 @@ export function useAuth() {
       return await res.json();
     },
     onSuccess: (data) => {
-      // In a real JWT app, we might store token here if not using httpOnly cookies
-      // For this implementation, we assume cookie-based or just state update
+      localStorage.setItem("token", data.token);
       queryClient.setQueryData(["/api/auth/me"], data.user);
       toast({ title: "Welcome back!", description: `Logged in as ${data.user.username}` });
     },
@@ -58,6 +64,7 @@ export function useAuth() {
       return await res.json();
     },
     onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
       queryClient.setQueryData(["/api/auth/me"], data.user);
       toast({ title: "Account created!", description: "Welcome to ScrimsMaster" });
     },
@@ -72,9 +79,7 @@ export function useAuth() {
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      // For pure client-side JWT without httpOnly cookies, just clear storage
-      // If server has logout endpoint, call it here.
-      // Assuming simple client-side logout for this template structure:
+      localStorage.removeItem("token");
       queryClient.setQueryData(["/api/auth/me"], null);
     },
     onSuccess: () => {

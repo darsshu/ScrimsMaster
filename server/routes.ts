@@ -101,21 +101,33 @@ export async function registerRoutes(
   });
 
   app.get(api.auth.me.path, authenticateToken, async (req: AuthRequest, res) => {
-    const user = await User.findById(req.user!.id);
-    if (!user) return res.status(401).json({ message: "User not found" });
-    res.json(mapDoc(user));
+    try {
+      const user = await User.findById(req.user!.id);
+      if (!user) return res.status(401).json({ message: "User not found" });
+      res.json(mapDoc(user));
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   // Wallet Routes
   app.get(api.wallet.balance.path, authenticateToken, async (req: AuthRequest, res) => {
-    const user = await User.findById(req.user!.id);
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json({ coins: user.coins });
+    try {
+      const user = await User.findById(req.user!.id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      res.json({ coins: user.coins });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   app.get(api.wallet.transactions.path, authenticateToken, async (req: AuthRequest, res) => {
-    const transactions = await Transaction.find({ userId: req.user!.id }).sort({ date: -1 });
-    res.json(transactions.map(mapDoc));
+    try {
+      const transactions = await Transaction.find({ userId: req.user!.id }).sort({ date: -1 });
+      res.json(transactions.map(mapDoc));
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   app.post(api.wallet.deposit.path, authenticateToken, async (req: AuthRequest, res) => {
@@ -124,12 +136,12 @@ export async function registerRoutes(
       const user = await User.findById(req.user!.id);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      user.coins += amount;
+      user.coins += Number(amount);
       await user.save();
 
       await Transaction.create({
         userId: user._id,
-        amount,
+        amount: Number(amount),
         type: "ADD",
         status: "SUCCESS"
       });
@@ -146,23 +158,24 @@ export async function registerRoutes(
       const user = await User.findById(req.user!.id);
       if (!user) return res.status(404).json({ message: "User not found" });
 
-      if (user.coins < amount) {
+      const withdrawAmount = Number(amount);
+      if (user.coins < withdrawAmount) {
         return res.status(400).json({ message: "Insufficient balance" });
       }
 
-      user.coins -= amount;
+      user.coins -= withdrawAmount;
       await user.save();
 
       await Transaction.create({
         userId: user._id,
-        amount,
+        amount: withdrawAmount,
         type: "WITHDRAW",
         status: "SUCCESS" // Debited from wallet immediately
       });
 
       const withdrawal = await Withdrawal.create({
         userId: user._id,
-        amount,
+        amount: withdrawAmount,
         upiId,
         status: "PENDING"
       });
@@ -175,14 +188,22 @@ export async function registerRoutes(
 
   // Scrims Routes
   app.get(api.scrims.list.path, async (req, res) => {
-    const scrims = await Scrim.find().sort({ matchDate: 1 });
-    res.json(scrims.map(mapDoc));
+    try {
+      const scrims = await Scrim.find().sort({ matchDate: 1 });
+      res.json(scrims.map(mapDoc));
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   app.get(api.scrims.get.path, async (req, res) => {
-    const scrim = await Scrim.findById(req.params.id);
-    if (!scrim) return res.status(404).json({ message: "Scrim not found" });
-    res.json(mapDoc(scrim));
+    try {
+      const scrim = await Scrim.findById(req.params.id);
+      if (!scrim) return res.status(404).json({ message: "Scrim not found" });
+      res.json(mapDoc(scrim));
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
   });
 
   app.post(api.scrims.create.path, authenticateToken, isAdmin, async (req, res) => {

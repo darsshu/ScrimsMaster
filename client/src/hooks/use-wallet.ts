@@ -6,7 +6,10 @@ export function useWallet() {
   return useQuery({
     queryKey: ["/api/wallet"],
     queryFn: async () => {
-      const res = await fetch(api.wallet.balance.path);
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(api.wallet.balance.path, { headers });
       if (!res.ok) throw new Error("Failed to fetch balance");
       return await res.json();
     },
@@ -17,7 +20,10 @@ export function useTransactions() {
   return useQuery({
     queryKey: ["/api/wallet/transactions"],
     queryFn: async () => {
-      const res = await fetch(api.wallet.transactions.path);
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const res = await fetch(api.wallet.transactions.path, { headers });
       if (!res.ok) throw new Error("Failed to fetch transactions");
       return await res.json();
     },
@@ -30,9 +36,12 @@ export function useDeposit() {
 
   return useMutation({
     mutationFn: async ({ amount, paymentId }: { amount: number; paymentId: string }) => {
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
       const res = await fetch(api.wallet.deposit.path, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({ amount, paymentId }),
       });
       if (!res.ok) throw new Error("Deposit failed");
@@ -52,9 +61,12 @@ export function useWithdraw() {
 
   return useMutation({
     mutationFn: async (data: InsertWithdrawal) => {
+      const token = localStorage.getItem("token");
+      const headers: Record<string, string> = { "Content-Type": "application/json" };
+      if (token) headers["Authorization"] = `Bearer ${token}`;
       const res = await fetch(api.wallet.withdraw.path, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error("Withdrawal request failed");
