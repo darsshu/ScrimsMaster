@@ -20,13 +20,13 @@ const MAP_IMAGES: Record<string, string> = {
 };
 
 export function ScrimCard({ scrim }: ScrimCardProps) {
-  const { join } = useJoinScrim();
+  const join = useJoinScrim();
   const { user } = useAuth();
 
   const isFull = scrim.filledSlots >= scrim.totalSlots;
   const isCompleted = scrim.status === "COMPLETED";
   const canJoin = user && !isFull && !isCompleted && user.coins >= scrim.entryFee;
-  
+
   const handleJoin = () => {
     if (!user) return;
     if (confirm(`Join this scrim for ${scrim.entryFee} coins?`)) {
@@ -39,8 +39,8 @@ export function ScrimCard({ scrim }: ScrimCardProps) {
       <div className="h-32 w-full relative overflow-hidden">
         {/* Descriptive alt text for accessibility */}
         {/* Map environment background */}
-        <img 
-          src={MAP_IMAGES[scrim.map] || MAP_IMAGES["Erangel"]} 
+        <img
+          src={MAP_IMAGES[scrim.map] || MAP_IMAGES["Erangel"]}
           alt={`${scrim.map} map`}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
@@ -51,7 +51,7 @@ export function ScrimCard({ scrim }: ScrimCardProps) {
           </Badge>
         </div>
         <div className="absolute top-3 right-3">
-          <Badge 
+          <Badge
             variant={scrim.status === 'OPEN' ? 'default' : 'secondary'}
             className={`${scrim.status === 'OPEN' ? 'bg-green-500 hover:bg-green-600' : ''}`}
           >
@@ -87,8 +87,8 @@ export function ScrimCard({ scrim }: ScrimCardProps) {
         </div>
 
         <div className="w-full bg-zinc-800 h-2 rounded-full overflow-hidden">
-          <div 
-            className="bg-primary h-full transition-all duration-500" 
+          <div
+            className="bg-primary h-full transition-all duration-500"
             style={{ width: `${(scrim.filledSlots / scrim.totalSlots) * 100}%` }}
           />
         </div>
@@ -96,20 +96,20 @@ export function ScrimCard({ scrim }: ScrimCardProps) {
 
       <CardFooter className="pt-2">
         {user ? (
-          <Button 
-            className="w-full font-bold" 
+          <Button
+            className="w-full font-bold"
             variant={canJoin ? "default" : "secondary"}
             disabled={!canJoin || join.isPending}
             onClick={handleJoin}
           >
             {join.isPending ? (
-              "Joining..." 
+              "Joining..."
             ) : isFull ? (
-              "Full" 
+              "Full"
             ) : isCompleted ? (
-              "Ended" 
+              "Ended"
             ) : user.coins < scrim.entryFee ? (
-              `Need ${scrim.entryFee - user.coins} more coins` 
+              `Need ${scrim.entryFee - user.coins} more coins`
             ) : (
               `Join • ${scrim.entryFee} Coins`
             )}
